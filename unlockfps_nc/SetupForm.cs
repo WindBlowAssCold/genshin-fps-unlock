@@ -68,7 +68,11 @@ namespace unlockfps_nc
                     {
                         windowHandle = hWnd;
                         Native.GetWindowThreadProcessId(hWnd, out var pid);
-                        processPath = ProcessUtils.GetProcessPathFromPid(pid, out processHandle);
+                        var foundPath = ProcessUtils.GetProcessPathFromPid(pid, out processHandle);
+                        if (!foundPath.Contains("YuanShen.exe") && !foundPath.Contains("GenshinImpact.exe"))
+                            return true;
+
+                        processPath = foundPath;
                         return false;
                     }
 
@@ -177,8 +181,8 @@ namespace unlockfps_nc
                 return;
             }
 
-            var unityPlayer = Path.Combine(directory, "UnityPlayer.dll");
-            if (!File.Exists(unityPlayer))
+            var dataDir = Path.Combine(directory, $"{fileName}_Data");
+            if (!Directory.Exists(dataDir))
             {
                 MessageBox.Show(@"That's not the right place", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
